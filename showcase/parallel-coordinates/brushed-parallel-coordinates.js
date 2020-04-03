@@ -47,16 +47,29 @@ const domains = IrisData.reduce((acc, row) => {
   });
 }, domainStructure);
 
-export default function BrushedParallelCoordinates(props) {
-  return (
-    <ParallelCoordinates
-      animation
-      brushing
-      data={IrisData.map(d => ({...d, color: SPECIES_COLORS[d.species]}))}
-      domains={domains}
-      margin={60}
-      width={600}
-      height={400}
-    />
-  );
+class BrushedParallelCoordinates extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+
+  handleBrushEnd(brushFilters) {
+    console.log(brushFilters)
+  }
+
+  render() {
+    return (
+      <ParallelCoordinates
+        animation
+        brushing
+        data={IrisData.map(d => ({...d, color: SPECIES_COLORS[d.species]}))}
+        domains={domains}
+        margin={60}
+        width={600}
+        height={400}
+        onBrushEnd={this.handleBrushEnd}
+      />
+    );
+  }
 }
+
+export default BrushedParallelCoordinates;

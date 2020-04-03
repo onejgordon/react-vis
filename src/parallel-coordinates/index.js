@@ -233,11 +233,14 @@ class ParallelCoordinates extends Component {
         {brushing &&
           domains.map(d => {
             const trigger = row => {
-              this.setState({
+              const st = {
                 brushFilters: {
                   ...brushFilters,
                   [d.name]: row ? {min: row.bottom, max: row.top} : null
                 }
+              }
+              this.setState(st, () => {
+                if (this.props.onBrushEnd !== null) this.props.onBrushEnd(st.brushFilters)
               });
             };
             return (
