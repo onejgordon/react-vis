@@ -220,6 +220,14 @@ var ParallelCoordinates = function (_Component) {
   }
 
   _createClass(ParallelCoordinates, [{
+    key: 'scaledRange',
+    value: function scaledRange(filter, domain) {
+      var range = domain[1] - domain[0];
+      var min = filter.min * range + domain[0];
+      var max = filter.max * range + domain[0];
+      return { min: min, max: max };
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
@@ -293,7 +301,33 @@ var ParallelCoordinates = function (_Component) {
               brushFilters: _extends({}, brushFilters, _defineProperty({}, d.name, row ? { min: row.bottom, max: row.top } : null))
             };
             _this2.setState(st, function () {
-              if (_this2.props.onBrushEnd !== null) _this2.props.onBrushEnd(st.brushFilters);
+              var scaledFilters = {};
+              var _iteratorNormalCompletion = true;
+              var _didIteratorError = false;
+              var _iteratorError = undefined;
+
+              try {
+                for (var _iterator = Object.keys(st.brushFilters)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                  var key = _step.value;
+
+                  if (st.brushFilters[key] !== null) scaledFilters[key] = _this2.scaledRange(st.brushFilters[key], d.domain);
+                }
+              } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+              } finally {
+                try {
+                  if (!_iteratorNormalCompletion && _iterator.return) {
+                    _iterator.return();
+                  }
+                } finally {
+                  if (_didIteratorError) {
+                    throw _iteratorError;
+                  }
+                }
+              }
+
+              if (_this2.props.onBrushEnd !== null) _this2.props.onBrushEnd(scaledFilters);
             });
           };
           return _react2.default.createElement(_highlight2.default, {

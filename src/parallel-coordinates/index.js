@@ -165,6 +165,13 @@ class ParallelCoordinates extends Component {
     brushFilters: {}
   };
 
+  scaledRange(filter, domain) {
+    const range = domain[1] - domain[0]
+    const min = filter.min * range + domain[0]
+    const max = filter.max * range + domain[0]
+    return {min, max}
+  }
+
   render() {
     const {brushFilters} = this.state;
     const {
@@ -240,7 +247,12 @@ class ParallelCoordinates extends Component {
                 }
               }
               this.setState(st, () => {
-                if (this.props.onBrushEnd !== null) this.props.onBrushEnd(st.brushFilters)
+                const scaledFilters = {}
+                for (const key of Object.keys(st.brushFilters)) {
+                  if (st.brushFilters[key] !== null)
+                    scaledFilters[key] = this.scaledRange(st.brushFilters[key], d.domain)
+                }
+                if (this.props.onBrushEnd !== null) this.props.onBrushEnd(scaledFilters)
               });
             };
             return (
